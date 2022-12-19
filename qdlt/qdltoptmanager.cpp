@@ -282,6 +282,15 @@ void QDltOptManager::parse(QStringList *opt)
                 exit(-1);
              }
          }
+        if(str.compare("-r")==0)
+         {
+            QString r1 = opt->value(i+1);
+
+            if(r1!=0)
+             {
+                initialSearch = QString("%1").arg(r1);
+             }
+         }
         if(str.compare("-u")==0)
          {
             convertionmode = e_UTF8;
@@ -346,3 +355,4 @@ QString QDltOptManager::getConvertDestFile(){return convertDestFile;}
 QString QDltOptManager::getPluginName(){return pluginName;}
 QString QDltOptManager::getCommandName(){return commandName;}
 QStringList QDltOptManager::getCommandParams(){return commandParams;}
+QString QDltOptManager::getInitialSearch(){return initialSearch;}

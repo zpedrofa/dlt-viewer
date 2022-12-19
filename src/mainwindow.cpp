@@ -476,6 +476,11 @@ void MainWindow::initView()
     /* Point scroll toggle button to right place */
     scrollButton = mainActions.at(ToolbarPosition::AutoScroll);
 
+    QString iSearch = QDltOptManager::getInstance()->getInitialSearch();
+    if(iSearch != 0){
+        searchTextbox->setText(iSearch);
+    }
+
     /* Update the scrollbutton status */
     updateScrollButton();
 }
