@@ -226,28 +226,32 @@ bool QDltMsg::setMsg(const QByteArray& buf, bool withStorageHeader)
             headerextra.tmsp = DLT_BETOH_32(headerextra.tmsp);
         }
     }
-
+    
     /* extract ecu id */
     if ( DLT_IS_HTYP_WEID(standardheader->htyp) )
     {
-        ecuid = QString(QByteArray(headerextra.ecu,4));
+        //ecuid = QString(QByteArray(headerextra.ecu,4));
+        memcpy(ecuid, headerextra.ecu, 4);
     }
     else
     {
         if(storageheader)
-            ecuid = QString(QByteArray(storageheader->ecu,4));
+            //ecuid = QString(QByteArray(storageheader->ecu,4));
+            memcpy(ecuid, headerextra.ecu, 4);
     }
 
     /* extract application id */
     if ((DLT_IS_HTYP_UEH(standardheader->htyp)) && (extendedheader->apid[0]!=0))
     {
-        apid = QString(QByteArray(extendedheader->apid,4));
+        //apid = QString(QByteArray(extendedheader->apid,4));
+        memcpy(apid, extendedheader->apid, 4);
     }
 
     /* extract context id */
     if ((DLT_IS_HTYP_UEH(standardheader->htyp)) && (extendedheader->ctid[0]!=0))
     {
-        ctid = QString(QByteArray(extendedheader->ctid,4));
+        //ctid = QString(QByteArray(extendedheader->ctid,4));
+        memcpy(ctid, extendedheader->ctid, 4);
     }
 
     /* extract type */
@@ -384,7 +388,8 @@ bool QDltMsg::getMsg(QByteArray &buf,bool withStorageHeader) {
         storageheader.pattern[1] = 'L';
         storageheader.pattern[2] = 'T';
         storageheader.pattern[3] = 0x01;
-        strncpy(storageheader.ecu,ecuid.toLatin1().constData(),ecuid.size()>3?4:ecuid.size()+1);
+        //strncpy(storageheader.ecu,ecuid.toLatin1().constData(),ecuid.size()>3?4:ecuid.size()+1);
+        memcpy(storageheader.ecu,ecuid,4);
         storageheader.microseconds = microseconds;
         storageheader.seconds = time;
         buf += QByteArray((const char *)&storageheader,sizeof(DltStorageHeader));
@@ -411,7 +416,8 @@ bool QDltMsg::getMsg(QByteArray &buf,bool withStorageHeader) {
 
     /* write standard header extra */
     if(mode == DltModeVerbose) {
-        strncpy(headerextra.ecu,ecuid.toLatin1().constData(),ecuid.size()>3?4:ecuid.size()+1);
+        //strncpy(headerextra.ecu,ecuid.toLatin1().constData(),ecuid.size()>3?4:ecuid.size()+1);
+        memcpy(headerextra.ecu,ecuid,4);
         buf += QByteArray((const char *)&(headerextra.ecu),sizeof(headerextra.ecu));
         headerextra.seid = DLT_SWAP_32(sessionid);
         buf += QByteArray((const char *)&(headerextra.seid),sizeof(headerextra.seid));
@@ -421,8 +427,10 @@ bool QDltMsg::getMsg(QByteArray &buf,bool withStorageHeader) {
 
     /* write extendedheader */
     if(mode == DltModeVerbose) {
-        strncpy(extendedheader.apid,apid.toLatin1().constData(),apid.size()>3?4:apid.size()+1);
-        strncpy(extendedheader.ctid,ctid.toLatin1().constData(),ctid.size()>3?4:ctid.size()+1);
+        //strncpy(extendedheader.apid,apid.toLatin1().constData(),apid.size()>3?4:apid.size()+1);
+        //strncpy(extendedheader.ctid,ctid.toLatin1().constData(),ctid.size()>3?4:ctid.size()+1);
+        memcpy(extendedheader.apid,apid,4);
+        memcpy(extendedheader.ctid,ctid,4);
         extendedheader.msin = 0;
         if(mode == DltModeVerbose) {
             extendedheader.msin |= DLT_MSIN_VERB;
@@ -442,9 +450,12 @@ bool QDltMsg::getMsg(QByteArray &buf,bool withStorageHeader) {
 
 void QDltMsg::clear()
 {
-    ecuid.clear();
-    apid.clear();
-    ctid.clear();
+    //ecuid.clear();
+    //apid.clear();
+    //ctid.clear();
+    memset(ecuid, '\0', 4);
+    memset(apid, '\0', 4);
+    memset(ctid, '\0', 4);
     type = DltTypeUnknown;
     subtype = DltLogUnknown;
     mode = DltModeUnknown;
@@ -661,7 +672,7 @@ void QDltMsg::genMsg()
     if(mode == DltModeVerbose) {
         uint16_t standardheaderlen = sizeof(DltStandardHeader) + sizeof(DltExtendedHeader) + payload.size();
         standardheader.htyp |= DLT_HTYP_UEH;
-        if(!ecuid.isEmpty()) {
+        if(ecuid[0] != '\0') {
             standardheader.htyp |= DLT_HTYP_WEID;
             standardheaderlen += sizeof(headerextra.ecu);
         }
@@ -683,8 +694,9 @@ void QDltMsg::genMsg()
 
     // write standard header extra
     if(mode == DltModeVerbose) {
-        if(!ecuid.isEmpty()) {
-            strncpy(headerextra.ecu,ecuid.toLatin1().constData(),ecuid.size()>3?4:ecuid.size()+1);
+        if(ecuid[0] != '\0') {
+            //strncpy(headerextra.ecu,ecuid.toLatin1().constData(),ecuid.size()>3?4:ecuid.size()+1);
+            memcpy(headerextra.ecu,ecuid,4);
             header += QByteArray((const char *)&(headerextra.ecu),sizeof(headerextra.ecu));
         }
         if(sessionid!=0) {
@@ -699,8 +711,10 @@ void QDltMsg::genMsg()
 
     // write extendedheader
     if(mode == DltModeVerbose) {
-        strncpy(extendedheader.apid,apid.toLatin1().constData(),apid.size()>3?4:apid.size()+1);
-        strncpy(extendedheader.ctid,ctid.toLatin1().constData(),ctid.size()>3?4:ctid.size()+1);
+        //strncpy(extendedheader.apid,apid.toLatin1().constData(),apid.size()>3?4:apid.size()+1);
+        //strncpy(extendedheader.ctid,ctid.toLatin1().constData(),ctid.size()>3?4:ctid.size()+1);
+        memcpy(extendedheader.apid,apid,4);
+        memcpy(extendedheader.ctid,ctid,4);
         extendedheader.msin = 0;
         if(mode == DltModeVerbose) {
             extendedheader.msin |= DLT_MSIN_VERB;

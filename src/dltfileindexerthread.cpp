@@ -90,7 +90,7 @@ void DltFileIndexerThread::processMessage(QSharedPointer<QDltMsg> &msg, int inde
         }
     }
 
-    /* check if it is a timezone message */
+    /* check if it is an unregister message */
     if((mode == DltFileIndexer::modeIndexAndFilter) &&
        msg->getType()==QDltMsg::DltTypeControl &&
        msg->getSubtype()==QDltMsg::DltControlResponse &&

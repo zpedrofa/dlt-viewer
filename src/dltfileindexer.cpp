@@ -93,8 +93,8 @@ DltFileIndexer::~DltFileIndexer()
 bool DltFileIndexer::index(int num)
 {
     // start performance counter
-    //QTime time(0,0,0,0);
-    // time.start();
+    QTime time(0,0,0,0);
+    time.start();
 
     // load filter index if enabled
     if(filterCacheEnabled && loadIndexCache(dltFile->getFileName(num)))
@@ -349,7 +349,7 @@ bool DltFileIndexer::indexFilter(QStringList filenames)
     unsigned int iPercent = 0;
 
     // start performance counter
-    //time.start();
+    time.start();
 
     // get filter list
     filterList = dltFile->getFilterList();
@@ -432,6 +432,8 @@ bool DltFileIndexer::indexFilter(QStringList filenames)
         indexerThread.start(); // thread starts reading its queue
     }
 
+    qDebug() << "Dauer:" << time.elapsed() << "l: " << __LINE__;
+
     // Start reading messages
     for(ix=start;ix<end;ix++)
     {
@@ -477,6 +479,8 @@ bool DltFileIndexer::indexFilter(QStringList filenames)
         }
     }
     emit(progress(100));
+
+    qDebug() << "Dauer:" << time.elapsed() << "l: " << __LINE__;
     // destroy threads
     if(true == useIndexerThread)
     {
@@ -485,7 +489,7 @@ bool DltFileIndexer::indexFilter(QStringList filenames)
     }
 
     // update performance counter
-    //msecsFilterCounter = time.elapsed();
+    msecsFilterCounter = time.elapsed();
 
     // use sorted values if sort by time enabled
     if(sortByTimeEnabled || sortByTimestampEnabled)
@@ -508,8 +512,8 @@ bool DltFileIndexer::indexDefaultFilter()
     QSharedPointer<QDltMsg> msg;
 
     // start performance counter
-    //QTime time;
-    //time.start();
+    QTime time;
+    time.start();
 
     // Initialise progress bar
     emit(progressText(QString("IF %1/%2").arg(currentRun).arg(maxRun)));
@@ -599,7 +603,7 @@ bool DltFileIndexer::indexDefaultFilter()
 
     // update performance counter
     //msecsDefaultFilterCounter = time.elapsed();
-    //qDebug() << "Duration " << msecsDefaultFilterCounter;
+    qDebug() << "Duration " << msecsDefaultFilterCounter;
 
     return true;
 }
@@ -702,15 +706,14 @@ void DltFileIndexer::run()
 
     //qDebug() << "Indexer run" << currentRun << "done" << __FILE__ <<  __LINE__;
     // print performance counter
-    /*
+    
     QTime time;
     time = QTime(0,0);time = time.addMSecs(msecsIndexCounter);
     qDebug() << "Duration Indexing:" << time.toString("hh:mm:ss.zzz") << "msecs";
     time = QTime(0,0);time = time.addMSecs(msecsFilterCounter);
     qDebug() << "Duration Filter Indexing:" << time.toString("hh:mm:ss.zzz") << "msecs";
     time = QTime(0,0);time = time.addMSecs(msecsDefaultFilterCounter);
-    qDebug() << "Duration Default Filter Indexing:" << time.toString("hh:mm:ss.zzz") << "msecs";
-    */
+    qDebug() << "Duration Default Filter Indexing:" << time.toString("hh:mm:ss.zzz") << "msecs";    
 }
 
 bool DltFileIndexer::getFilterIndexEnabled() const

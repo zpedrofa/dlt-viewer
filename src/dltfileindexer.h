@@ -145,6 +145,9 @@ public:
     qint64 getFilterIndexEnd() const;
     void setFilterIndexEnd(qint64 newFilterIndexEnd);
 
+    // Parsed messages vector, no need to parse on every filter update
+    //QVector<QDltMsg> parsedAll;
+
 protected:
 
 private:

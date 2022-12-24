@@ -167,7 +167,7 @@ public:
     /*!
       \param _ecuid The ecu id of the DLT message.
     */
-    void setEcuid(QString _ecuid) { ecuid = _ecuid; }
+    void setEcuid(QString _ecuid) { memcpy(ecuid, _ecuid.toStdString().c_str(), 4); }
 
     //! Get the application id of the DLT message.
     /*!
@@ -179,7 +179,7 @@ public:
     /*!
       \param id The application id.
     */
-    void setApid(QString id) { apid = id; }
+    void setApid(QString id) { memcpy(apid, id.toStdString().c_str(), 4); }
 
     //! Get the context id of the DLT message.
     /*!
@@ -191,7 +191,7 @@ public:
     /*!
       \param id The context id.
     */
-    void setCtid(QString id) { ctid = id; }
+    void setCtid(QString id) { memcpy(ctid, id.toStdString().c_str(), 4); }
 
     //! Get the type of the DLT message.
     /*!
@@ -458,13 +458,13 @@ protected:
 private:
 
     //! The header parameter ECU Id.
-    QString ecuid;
+    char ecuid[4];
 
     //! The header parameter application Id.
-    QString apid;
+    char apid[4];
 
     //! The header parameter context Id.
-    QString ctid;
+    char ctid[4];
 
     //! The header parameter type of the message.
     DltTypeDef type;
