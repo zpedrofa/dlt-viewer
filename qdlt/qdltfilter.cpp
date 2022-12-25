@@ -43,9 +43,9 @@ QDltFilter& QDltFilter::operator= (QDltFilter const& _filter)
     type = _filter.type;
     name = _filter.name;
 
-    ecuid = _filter.ecuid;
-    apid = _filter.apid;
-    ctid = _filter.ctid;
+    memcpy(ecuid,_filter.ecuid,4);
+    memcpy(apid,_filter.apid,4);
+    memcpy(ctid,_filter.ctid,4);
     header = _filter.header;
     payload = _filter.payload;
     regex_search = _filter.regex_search;
@@ -91,9 +91,9 @@ void QDltFilter::clear()
     type = QDltFilter::positive;
     name = "New Filter";
 
-    ecuid.clear();
-    apid.clear();
-    ctid.clear();
+    memset(ecuid, '\0', 5);
+    memset(apid, '\0', 5);
+    memset(ctid, '\0', 5);
     header.clear();
     payload.clear();
     regex_search.clear();
@@ -163,10 +163,12 @@ bool QDltFilter::compileRegexps()
 bool QDltFilter::match(QDltMsg &msg) const
 {
 
-    if( (true == enableEcuid) && (msg.getEcuid() != ecuid))
+    if( (true == enableEcuid) && (0 != memcmp(msg.getEcuid(),ecuid,4)))
     {
         return false;
     }
+
+    return true;
 
     if( true == enableRegexp_Appid )
     {
@@ -193,7 +195,7 @@ bool QDltFilter::match(QDltMsg &msg) const
     }
     else
     {
-        if( (true ==enableCtid) && ( false == msg.getCtid().contains(ctid) ) )
+        if( (true ==enableCtid) && ( 0 != memcmp(msg.getCtid(), ctid, 4) ) )
         {
             return false;
         }
@@ -277,17 +279,20 @@ void QDltFilter::LoadFilterItem(QXmlStreamReader &xml)
     }
     if(xml.name() == QString("ecuid"))
     {
-          ecuid = xml.readElementText();
+          strncpy_s(ecuid,xml.readElementText().toLatin1().constData(),4);
+          //ecuid = xml.readElementText();
 
     }
     if(xml.name() == QString("applicationid"))
     {
-          apid = xml.readElementText();
+          strncpy_s(apid,xml.readElementText().toLatin1().constData(),4);
+          //apid = xml.readElementText();
 
     }
     if(xml.name() == QString("contextid"))
     {
-          ctid = xml.readElementText();
+          strncpy_s(ctid,xml.readElementText().toLatin1().constData(),4);
+          //ctid = xml.readElementText();
 
     }
     if(xml.name() == QString("headertext"))

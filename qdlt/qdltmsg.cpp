@@ -518,9 +518,9 @@ QString QDltMsg::toStringHeader() const
     text += QString("%1.%2").arg(getTimeString()).arg(getMicroseconds(),6,10,QLatin1Char('0'));
     text += QString(" %1.%2").arg(getTimestamp()/10000).arg(getTimestamp()%10000,4,10,QLatin1Char('0'));
     text += QString(" %1").arg(getMessageCounter());
-    text += QString(" %1").arg(getEcuid());
-    text += QString(" %1").arg(getApid());
-    text += QString(" %1").arg(getCtid());
+    text += QString(" %1").arg(QString::fromUtf8(ecuid));
+    text += QString(" %1").arg(QString::fromUtf8(apid));
+    text += QString(" %1").arg(QString::fromUtf8(ctid));
     text += QString(" %1").arg(getSessionid());
     text += QString(" %2").arg(getTypeString());
     text += QString(" %2").arg(getSubtypeString());

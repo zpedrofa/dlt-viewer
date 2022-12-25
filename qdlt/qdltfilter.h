@@ -44,9 +44,9 @@ public:
     FilterType type;
     QString name;
 
-    QString ecuid;
-    QString apid;
-    QString ctid;
+    char ecuid[5];
+    char apid[5];
+    char ctid[5];
     QString header;
     QString payload;
     QString regex_search;

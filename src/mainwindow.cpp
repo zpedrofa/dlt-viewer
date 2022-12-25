@@ -901,7 +901,7 @@ void MainWindow::deleteactualFile()
                                   .arg(outputfile.fileName())
                                   .arg(outputfile.errorString()));
          }
-	   }
+       }
     }
 }
 
@@ -1961,7 +1961,7 @@ void MainWindow::reloadLogFile(bool update, bool multithreaded)
 
     if ( true == isDltFileReadOnly )
     {
-	name += " (ReadOnly)";
+    name += " (ReadOnly)";
     }
 
     statusFilename->setMinimumWidth(1); // this is the rollback of the workaround for first call
@@ -3383,7 +3383,7 @@ void MainWindow::connectECU(EcuItem* ecuitem,bool force)
                 if ( NULL != ecuitem->m_serialport )
                 {
                 ecuitem->m_serialport->setBaudRate(ecuitem->getBaudrate(), QSerialPort::AllDirections);
-		ecuitem->m_serialport->setPortName(ecuitem->getPort());
+        ecuitem->m_serialport->setPortName(ecuitem->getPort());
                 ecuitem->m_serialport->setDataBits(QSerialPort::Data8);
                 ecuitem->m_serialport->setParity(QSerialPort::NoParity);
                 ecuitem->m_serialport->setStopBits(QSerialPort::OneStop);
@@ -3749,13 +3749,13 @@ void MainWindow::read(EcuItem* ecuitem)
             #endif
 
             /* prepare storage header */
-            if (false == qmsg.getEcuid().isEmpty()) // means the ECU ID field is NOT empty
+            if ('\0' != qmsg.getEcuid()[0]) // means the ECU ID field is NOT empty
             {
-               dlt_set_id(str.ecu,qmsg.getEcuid().toLatin1());
+               dlt_set_id(str.ecu,qmsg.getEcuid());
                if ( ecuitem->id == ecuitem->default_id ) // in this case we take the ECUid from the dlt message
                 {
-                qDebug() << "Received ECU ID " << qmsg.getEcuid().toLatin1();
-                ecuitem->id = qmsg.getEcuid().toLatin1();
+                qDebug() << "Received ECU ID " << qmsg.getEcuid();
+                ecuitem->id = qmsg.getEcuid();
                 ecuitem->update();
                }
             }
@@ -6391,11 +6391,11 @@ void MainWindow::filterAddTable() {
 
     /* show filter dialog */
     FilterDialog dlg;
-    dlg.setEnableEcuId(!msg.getEcuid().isEmpty());
+    dlg.setEnableEcuId(msg.getEcuid()[0]);
     dlg.setEcuId(msg.getEcuid());
-    dlg.setEnableApplicationId(!msg.getApid().isEmpty());
+    dlg.setEnableApplicationId(msg.getApid()[0]);
     dlg.setApplicationId(msg.getApid());
-    dlg.setEnableContextId(!msg.getCtid().isEmpty());
+    dlg.setEnableContextId(msg.getCtid()[0]);
     dlg.setContextId(msg.getCtid());
     dlg.setHeaderText(msg.toStringHeader());
     dlg.setPayloadText(msg.toStringPayload());
@@ -6551,9 +6551,12 @@ void MainWindow::filterDialogRead(FilterDialog &dlg,FilterItem* item)
 
     item->filter.name = dlg.getName();
 
-    item->filter.ecuid = dlg.getEcuId();
-    item->filter.apid = dlg.getApplicationId();
-    item->filter.ctid = dlg.getContextId();
+    strncpy_s(item->filter.ecuid,dlg.getEcuId().toLatin1().constData(),4);
+    strncpy_s(item->filter.apid,dlg.getApplicationId().toLatin1().constData(),4);
+    strncpy_s(item->filter.ctid,dlg.getContextId().toLatin1().constData(),4);
+    //item->filter.ecuid = dlg.getEcuId();
+    //item->filter.apid = dlg.getApplicationId();
+    //item->filter.ctid = dlg.getContextId();
     item->filter.header = dlg.getHeaderText();
     item->filter.payload = dlg.getPayloadText();
     item->filter.regex_search = dlg.getRegexSearchText();

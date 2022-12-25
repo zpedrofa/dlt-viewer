@@ -138,7 +138,6 @@ bool QDltFilterList::checkFilter(QDltMsg &msg)
     else
         found = false;
 
-
     for(int numfilter=0;numfilter<pfilters.size();numfilter++)
     {
         filter = pfilters[numfilter];

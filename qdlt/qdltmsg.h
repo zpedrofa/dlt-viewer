@@ -161,7 +161,7 @@ public:
     /*!
       \return The ecu id of the DLT message.
     */
-    QString getEcuid() const { return ecuid; }
+    char* getEcuid() { return ecuid; }
 
     //! Set the ecu id of the DLT message.
     /*!
@@ -173,7 +173,7 @@ public:
     /*!
       \return The application id.
     */
-    QString getApid() const { return apid; }
+    char* getApid() { return apid; }
 
     //! Set the application id of the DLT message.
     /*!
@@ -185,7 +185,7 @@ public:
     /*!
       \return The contex id.
     */
-    QString getCtid() const { return ctid; }
+    char* getCtid() { return ctid; }
 
     //! Set the context id of the DLT message.
     /*!
@@ -458,13 +458,13 @@ protected:
 private:
 
     //! The header parameter ECU Id.
-    char ecuid[4];
+    char ecuid[5];
 
     //! The header parameter application Id.
-    char apid[4];
+    char apid[5];
 
     //! The header parameter context Id.
-    char ctid[4];
+    char ctid[5];
 
     //! The header parameter type of the message.
     DltTypeDef type;

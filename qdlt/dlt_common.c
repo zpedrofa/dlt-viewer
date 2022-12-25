@@ -339,51 +339,15 @@ void dlt_print_id(char *text,const char *id)
 
 void dlt_set_id(char *id,const char *text)
 {
-    id[0] = 0;
-    id[1] = 0;
-    id[2] = 0;
-    id[3] = 0;
+    memset(id, 0, 4);
 
     if (text==0)
     {
         return;
     }
 
-    if (text[0]!=0)
-    {
-        id[0] = text[0];
-    }
-    else
-    {
-        return;
-    }
-
-    if (text[1]!=0)
-    {
-        id[1] = text[1];
-    }
-    else
-    {
-        return;
-    }
-
-    if (text[2]!=0)
-    {
-        id[2] = text[2];
-    }
-    else
-    {
-        return;
-    }
-
-    if (text[3]!=0)
-    {
-        id[3] = text[3];
-    }
-    else
-    {
-        return;
-    }
+    memcpy(id, text, 4);
+    return;
 }
 
 void dlt_clean_string(char *text,int length)

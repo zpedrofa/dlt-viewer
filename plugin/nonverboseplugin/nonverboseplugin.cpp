@@ -508,7 +508,7 @@ bool NonverbosePlugin::isMsg(QDltMsg &msg, int triggeredByUser)
 
     QString idtext = QString("ID_%1").arg(msg.getMessageId());
 
-    if(!msg.getApid().isEmpty() && !msg.getCtid().isEmpty())
+    if(msg.getApid()[0] && msg.getCtid()[0])
         // search in full key, if msg already contains AppId and CtId
         return framemapwithkey.contains(DltFibexKey(idtext,msg.getApid(),msg.getCtid()));
     else
@@ -534,7 +534,7 @@ bool NonverbosePlugin::decodeMsg(QDltMsg &msg, int triggeredByUser)
 
     QString idtext = QString("ID_%1").arg(msg.getMessageId());
     DltFibexFrame *frame;
-    if(!msg.getApid().isEmpty() && !msg.getCtid().isEmpty())
+    if(msg.getApid()[0] && msg.getCtid()[0])
     {
         // search in full key, if msg already contains AppId and CtId
         frame = framemapwithkey[DltFibexKey(idtext,msg.getApid(),msg.getCtid())];
@@ -550,11 +550,11 @@ bool NonverbosePlugin::decodeMsg(QDltMsg &msg, int triggeredByUser)
     /* set message data */
 
     // set ApId only if it is empty
-    if(msg.getApid().isEmpty())
+    if(msg.getApid()[0] == '\0')
         msg.setApid(frame->appid);
 
     // set Context Id only if it is empty
-    if(msg.getCtid().isEmpty())
+    if(msg.getCtid()[0] == '\0')
         msg.setCtid(frame->ctid);
 
     msg.setNumberOfArguments(frame->pdureflist.size());

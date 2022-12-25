@@ -170,7 +170,7 @@ void DltTestRobotPlugin::updateMsgDecoded(int , QDltMsg &msg)
     {
         if(filterEcuId[num]==msg.getEcuid() && filterAppId[num]==msg.getApid() && filterCtxId[num]==msg.getCtid() && tcpSocket)
         {
-            QString text = msg.getEcuid() + " " + msg.getApid() + " " + msg.getCtid() + " " + msg.toStringPayload();
+            QString text = QString::fromUtf8(msg.getEcuid()) + " " + QString::fromUtf8(msg.getApid()) + " " + QString::fromUtf8(msg.getCtid()) + " " + msg.toStringPayload();
             qDebug() << "DltTestRobot: send message" << text;
             text += "\n";
             tcpSocket->write(text.toLatin1());
