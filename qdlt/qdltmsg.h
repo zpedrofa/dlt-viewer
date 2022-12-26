@@ -458,13 +458,13 @@ protected:
 private:
 
     //! The header parameter ECU Id.
-    char ecuid[5];
+    char ecuid[5] = {0};
 
     //! The header parameter application Id.
-    char apid[5];
+    char apid[5] = {0};
 
     //! The header parameter context Id.
-    char ctid[5];
+    char ctid[5] = {0};
 
     //! The header parameter type of the message.
     DltTypeDef type;

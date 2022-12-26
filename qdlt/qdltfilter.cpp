@@ -168,11 +168,10 @@ bool QDltFilter::match(QDltMsg &msg) const
         return false;
     }
 
-    return true;
-
     if( true == enableRegexp_Appid )
     {
-        if( (true == enableApid) && ( false == appidRegularExpression.match(msg.getApid()).hasMatch() ) )
+        //qDebug() << "APID:" << QString::fromLatin1(msg.getApid());
+        if( (true == enableApid) && ( false == appidRegularExpression.match(QString::fromLatin1(msg.getApid())).hasMatch() ) )
         {
             return false;
         }
@@ -180,7 +179,7 @@ bool QDltFilter::match(QDltMsg &msg) const
     }
     else
     {
-        if( (true == enableApid) && (msg.getApid() != apid))
+        if( (true == enableApid) && (0 != memcmp(msg.getApid(),apid,4)))
         {
             return false;
         }
@@ -188,7 +187,7 @@ bool QDltFilter::match(QDltMsg &msg) const
 
     if(true == enableRegexp_Context)
     {
-        if( (true == enableCtid) && ( false == contextRegularExpression.match(msg.getCtid()).hasMatch() ) )
+        if( (true == enableCtid) && ( false == contextRegularExpression.match(QString::fromLatin1(msg.getCtid())).hasMatch() ) )
         {
             return false;
         }

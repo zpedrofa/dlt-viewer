@@ -453,9 +453,9 @@ void QDltMsg::clear()
     //ecuid.clear();
     //apid.clear();
     //ctid.clear();
-    memset(ecuid, '\0', 4);
-    memset(apid, '\0', 4);
-    memset(ctid, '\0', 4);
+    memset(ecuid, '\0', 5);
+    memset(apid, '\0', 5);
+    memset(ctid, '\0', 5);
     type = DltTypeUnknown;
     subtype = DltLogUnknown;
     mode = DltModeUnknown;
